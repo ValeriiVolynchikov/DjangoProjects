@@ -61,19 +61,19 @@ class Product(models.Model):
         verbose_name_plural = "Продукты"
 
 
-# class ContactInfo(models.Model):
-#     address = models.CharField(max_length=255)
-#     phone = models.CharField(max_length=20)
-#     email = models.EmailField()
-#
-#     def __str__(self):
-#         return f"Contact Info - {self.address}"
-#
-#
-# class Contact(models.Model):
-#     name = models.CharField(max_length=100)
-#     email = models.EmailField()
-#     phone = models.CharField(max_length=15, blank=True, null=True)
-#
-#     def __str__(self):
-#         return self.name
+class ContactInfo(models.Model):
+    address = models.CharField(max_length=255)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField()
+
+    def __str__(self):
+        return f"Contact Info - {self.address}"
+
+
+class Contact(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
