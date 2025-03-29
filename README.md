@@ -45,14 +45,22 @@ DjangoProjects/
 │   ├── templates/         # HTML-шаблоны
 │   │   ├── home.html      # Главная страница
 │   │   ├── contacts.html  # Страница контактов
+│   ├── migrations.py      # Директория приложения файлов миграции СБД
 │   ├── views.py           # Контроллеры (обработка страниц и формы)
 │   ├── urls.py            # Маршруты приложения
-│
+│   ├── photo/             # Папка хранения изображений продуктов
+│   ├── management/        # Пакет приложения кастомной команды
+│   ├───__init__.py
+│       └───commands/
+│           ├───__init__.py
+│           └───add_products.py
 ├── static/                # Статические файлы (CSS, JS, изображения)
 │   ├── css/bootstrap.min.css
 |   ├── js/bootstrap.min.css
+├── screenchots/           # Скриншоты выполнения Django shell
 │
 ├── manage.py              # Основной файл управления Django-проектом
+├── .env                   # Файл для хранения переменных среды и конфиденциальной информации
 ├── requirements.txt       # Список зависимостей
 ├── README.md              # Документация проекта
 ```
