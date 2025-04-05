@@ -23,6 +23,8 @@
             </div>
             <div class="text-center mt-3">
                 <a class="btn btn-primary" href="{% url 'catalog:home' %}">Назад</a>
+                <!-- В product_info.html, рядом с кнопкой "Назад" -->
+                <a class="btn btn-warning" href="{% url 'catalog:edit_product' product.pk %}">Редактировать</a>
             </div>
         </div>
     </div>

@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from catalog.forms import ProductForm
 from catalog.models import Product, Contact
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -61,3 +62,15 @@ def add_product(request):
         form = ProductForm()
 
     return render(request, "add_product.html", {'form': form})
+
+@login_required
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('catalog:home')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'edit_product.html', {'form': form})

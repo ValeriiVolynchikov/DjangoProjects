@@ -12,7 +12,10 @@
             <ul class="list-unstyled mt-3 mb-4 text-start flex-grow-1">
                 <li>{{ product.description|truncatewords:20 }}</li>
             </ul>
-            <a class="btn btn-primary" href="{% url 'catalog:product_info' product.pk %}">Подробнее</a>
+            <div class="d-flex gap-2">  <!-- Добавляем контейнер для кнопок -->
+                <a class="btn btn-primary" href="{% url 'catalog:product_info' product.pk %}">Подробнее</a>
+                <a class="btn btn-warning" href="{% url 'catalog:edit_product' product.pk %}">Редактировать</a>
+            </div>
         </div>
     </div>
 </div>
