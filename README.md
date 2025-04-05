@@ -45,7 +45,16 @@ DjangoProjects/
 │   ├── templates/         # HTML-шаблоны
 │   │   ├── home.html      # Главная страница
 │   │   ├── contacts.html  # Страница контактов
+│   │   ├── base.html      # Базовый шаблон
+│   │   ├── add_product.html  
+│   │   ├── footer.html    
+│   │   ├── header.html    
+│   │   ├── product_card.html  
+│   │   ├── product_info.html 
+│   ├── templatags/        
+│   │   ├── mu_tags.py     # Файл с пользовательскими тегами
 │   ├── migrations.py      # Директория приложения файлов миграции СБД
+│   ├── forms.py
 │   ├── views.py           # Контроллеры (обработка страниц и формы)
 │   ├── urls.py            # Маршруты приложения
 │   ├── photo/             # Папка хранения изображений продуктов
