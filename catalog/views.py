@@ -3,10 +3,26 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from catalog.forms import ProductForm
 from catalog.models import Product, Contact
+from django.db.models import Q
 
 
 def home(request):
-    return render(request, 'home.html')
+    search_query = request.GET.get('q', '')
+    if search_query:
+        products_list = Product.objects.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+    else:
+        products_list = Product.objects.all()
+
+    context = {
+        'products_list': products_list,
+        'search_query': search_query,
+    }
+    print(f"Query: {search_query}")
+    print(f"Products: {products_list}")
+    return render(request, 'home.html', context)
 
 
 def product_info(request, pk):
