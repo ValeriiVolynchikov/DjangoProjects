@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load my_tags %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -22,9 +23,39 @@
                 <p class="text-start">{{ product.description }}</p>
             </div>
             <div class="text-center mt-3">
-                <a class="btn btn-primary" href="{% url 'catalog:home' %}">Назад</a>
-                <!-- В product_info.html, рядом с кнопкой "Назад" -->
-                <a class="btn btn-warning" href="{% url 'catalog:edit_product' product.pk %}">Редактировать</a>
+                <div class="btn-group gap-2 rounded">
+                    <a class="btn btn-secondary rounded" href="{% url 'catalog:home' %}">Назад</a>
+                    <a class="btn btn-warning rounded" href="{% url 'catalog:edit_product' product.pk %}">Редактировать</a>
+                    <button type="button"
+                            class="btn btn-danger rounded"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                        Удалить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно подтверждения удаления -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Подтверждение удаления</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить товар <strong>"{{ product.name }}"</strong>?</p>
+                <p class="text-danger">Это действие нельзя отменить!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <form method="post" action="{% url 'catalog:delete_product' product.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
             </div>
         </div>
     </div>

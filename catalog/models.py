@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 
 
 class Category(models.Model):
@@ -59,6 +60,26 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
+
+# class ProductForm(forms.ModelForm):
+#     new_category_name = forms.CharField(
+#         max_length=100,
+#         required=False,
+#         widget=forms.TextInput(attrs={
+#             'class': 'form-control',
+#             'placeholder': 'Введите новую категорию (если нужная категория отсутствует)',
+#         })
+#     )
+#
+#     class Meta:
+#         model = Product
+#         fields = ['category', 'name', 'description', 'price', 'image']
+#         widgets = {
+#             'category': forms.Select(attrs={'class': 'form-control'}),
+#             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите название продукта'}),
+#             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Введите описание продукта'}),
+#             'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Введите цену продукта'}),
+#         }
 
 
 class ContactInfo(models.Model):
