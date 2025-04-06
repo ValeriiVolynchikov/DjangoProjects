@@ -50,7 +50,11 @@ DjangoProjects/
 │   │   ├── footer.html    
 │   │   ├── header.html    
 │   │   ├── product_card.html  
-│   │   ├── product_info.html 
+│   │   ├──  product_info.html
+│   │   ├──  category.html
+│   │   ├──  category_not_found.html
+│   │   ├──  delete_product.html
+│   │   ├──  edit_product.html
 │   ├── templatags/        
 │   │   ├── mu_tags.py     # Файл с пользовательскими тегами
 │   ├── migrations.py      # Директория приложения файлов миграции СБД
