@@ -67,6 +67,7 @@ DjangoProjects/
 │       └───commands/
 │           ├───__init__.py
 │           └───add_products.py
+│           └───clear_cache.py
 ├── static/                # Статические файлы (CSS, JS, изображения)
 │   ├── css/bootstrap.min.css
 |   ├── js/bootstrap.min.css
