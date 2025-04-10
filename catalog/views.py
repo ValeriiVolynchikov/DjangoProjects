@@ -116,15 +116,3 @@ class CategoryView(ListView):
             return super().dispatch(request, *args, **kwargs)
         except Category.DoesNotExist:
             return render(request, 'category_not_found.html', {'category_id': kwargs['category_id']})
-    # def get_queryset(self):
-    #     category_id = self.kwargs.get('category_id')
-    #     try:
-    #         self.category = Category.objects.get(id=category_id)
-    #     except Category.DoesNotExist:
-    #         raise Http404("Category not found")
-    #     return Product.objects.filter(category=self.category).order_by('id')
-    #
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['category'] = self.category
-    #     return context
