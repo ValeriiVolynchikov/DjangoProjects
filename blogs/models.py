@@ -22,6 +22,7 @@ class BlogPost(models.Model):
         default=0,
         verbose_name="Количество просмотров",
         help_text="Укажите количество просмотров поста",
+        editable=False
     )
 
     class Meta:

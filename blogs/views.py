@@ -28,7 +28,7 @@ class BlogPostDetailView(DetailView):
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
         obj.count_views += 1
-        obj.save()
+        obj.save(update_fields=["count_views"])  # Сохраняет только поле count_views
         return obj
 
 
