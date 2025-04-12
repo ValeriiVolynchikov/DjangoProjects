@@ -67,6 +67,23 @@ DjangoProjects/
 │       └───commands/
 │           ├───__init__.py
 │           └───add_products.py
+│           └───clear_cache.py
+├── blogs/               # Приложение БЛОГ
+│   ├── templates/         # HTML-шаблоны
+│   │   ├── blogs/
+│   │   	├── blog_card.html      
+│   │   	├── blog_create.html  
+│   │   	├── base.html      # Базовый шаблон
+│   │   	├── blog_delete.html  
+│   │   	├── footer.html    
+│   │   	├── header.html    
+│   │   	├── blog_detail.html  
+│   │   	├── blog_list.html
+│   ├── migrations.py      # Директория приложения файлов миграции СБД
+│   ├── forms.py
+│   ├── views.py           # Контроллеры (обработка страниц и формы)
+│   ├── urls.py            # Маршруты приложения
+│   ├── models.py 
 ├── static/                # Статические файлы (CSS, JS, изображения)
 │   ├── css/bootstrap.min.css
 |   ├── js/bootstrap.min.css
