@@ -54,7 +54,7 @@ class ContactsView(TemplateView):
         message = request.POST.get('message')
         return HttpResponse(f"Спасибо {name} за отзыв! Ваше сообщение получено")
 
-class ProductCreateView(SuccessMessageMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'add_product.html'

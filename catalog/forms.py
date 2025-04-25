@@ -1,83 +1,11 @@
 from django import forms
 from .models import Product
+from django.core.exceptions import ValidationError
 
-
-# class ProductForm(forms.ModelForm):
-#     new_category_name = forms.CharField(
-#         max_length=100,
-#         required=False,
-#         label='Новая категория',
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control',
-#             'placeholder': 'Введите новую категорию (если нужная категория отсутствует)',
-#         }),
-#         help_text='Заполните это поле, если нужной категории нет в списке'
-#     )
-#
-#     class Meta:
-#         model = Product
-#         fields = ['category', 'name', 'description', 'price', 'image']
-#         widgets = {
-#             'category': forms.Select(attrs={'class': 'form-control'}),
-#             'name': forms.TextInput(attrs={
-#                 'class': 'form-control',
-#                 'placeholder': 'Введите название продукта'
-#             }),
-#             'description': forms.Textarea(attrs={
-#                 'class': 'form-control',
-#                 'placeholder': 'Введите описание продукта',
-#                 'rows': 3
-#             }),
-#             'price': forms.NumberInput(attrs={
-#                 'class': 'form-control',
-#                 'placeholder': 'Введите цену продукта',
-#                 'step': '0.01'
-#             }),
-#             'image': forms.ClearableFileInput(attrs={
-#                 'class': 'form-control'
-#             })
-#         }
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         # Гарантируем, что у всех полей будут id
-#         self.auto_id = 'id_%s'
-#
-# from django import forms
-# from .models import Product
-
-
-# class ProductForm(forms.ModelForm):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.auto_id = 'id_%s'  # Явное указание формата ID
-# Временное решение в forms.py
-# class ProductForm(forms.ModelForm):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for field_name in self.fields:
-#             self.fields[field_name].widget.attrs['id'] = f'id_{field_name}'
-#
-#         # Унифицированные классы для всех полей
-#         for field_name, field in self.fields.items():
-#             field.widget.attrs.update({'class': 'form-control'})
-#
-#             if field_name == 'description':
-#                 field.widget.attrs.update({'rows': 3})
-#             elif field_name == 'price':
-#                 field.widget.attrs.update({'step': '0.01'})
-#
-#     new_category_name = forms.CharField(
-#         required=False,
-#         label="Новая категория (если нет в списке)",
-#         help_text="Оставьте пустым, если выбираете существующую категорию"
-#     )
-#
-#     class Meta:
-#         model = Product
-#         fields = ['category', 'new_category_name', 'name', 'description', 'price', 'image']
-from django import forms
-from .models import Product
+FORBIDDEN_WORDS = [
+    'казино', 'криптовалюта', 'крипта', 'биржа',
+    'дешево', 'бесплатно', 'обман', 'полиция', 'радар'
+]
 
 
 class ProductForm(forms.ModelForm):
@@ -101,20 +29,65 @@ class ProductForm(forms.ModelForm):
             }),
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'id': 'id_name'
+                'id': 'id_name',
+                'placeholder': 'Введите название продукта'
             }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
                 'id': 'id_description',
-                'rows': 3
+                'rows': 3,
+                'placeholder': 'Введите описание продукта'
             }),
             'price': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'id': 'id_price',
-                'step': '0.01'
+                'step': '0.01',
+                'placeholder': '0.00'
             }),
             'image': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
                 'id': 'id_image'
             })
         }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            for field_name, field in self.fields.items():
+                if field_name != 'image':
+                    field.widget.attrs['class'] = 'form-control'
+                if field_name == 'publication_sign':
+                    field.widget.attrs['class'] = 'form-check-input'
+
+        def clean_name(self):
+            name = self.cleaned_data['name'].lower()
+            for word in FORBIDDEN_WORDS:
+                if word in name:
+                    raise ValidationError(f'Название содержит запрещенное слово: {word}')
+            return self.cleaned_data['name']
+
+        def clean_description(self):
+            description = self.cleaned_data['description'].lower()
+            for word in FORBIDDEN_WORDS:
+                if word in description:
+                    raise ValidationError(f'Описание содержит запрещенное слово: {word}')
+            return self.cleaned_data['description']
+
+        def clean_price(self):
+            price = self.cleaned_data['price']
+            if price < 0:
+                raise ValidationError('Цена не может быть отрицательной')
+            return price
+
+        def clean_image(self):
+            image = self.cleaned_data.get('image')
+            if image:
+                # Проверка размера файла (не более 5MB)
+                if image.size > 5 * 1024 * 1024:
+                    raise ValidationError('Размер файла не должен превышать 5MB')
+
+                # Проверка формата файла
+                valid_extensions = ['.jpg', '.jpeg', '.png']
+                extension = image.name.split('.')[-1].lower()
+                if f'.{extension}' not in valid_extensions:
+                    raise ValidationError('Поддерживаются только файлы JPEG и PNG')
+            return image
