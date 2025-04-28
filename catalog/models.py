@@ -54,32 +54,18 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Активный товар",
+        help_text="Отображать товар в каталоге"
+    )
+
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
-
-# class ProductForm(forms.ModelForm):
-#     new_category_name = forms.CharField(
-#         max_length=100,
-#         required=False,
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control',
-#             'placeholder': 'Введите новую категорию (если нужная категория отсутствует)',
-#         })
-#     )
-#
-#     class Meta:
-#         model = Product
-#         fields = ['category', 'name', 'description', 'price', 'image']
-#         widgets = {
-#             'category': forms.Select(attrs={'class': 'form-control'}),
-#             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите название продукта'}),
-#             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Введите описание продукта'}),
-#             'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Введите цену продукта'}),
-#         }
 
 
 class ContactInfo(models.Model):
