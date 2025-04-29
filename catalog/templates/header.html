@@ -6,7 +6,7 @@
         <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:add_product' %}">Добавить товар</a>
     </nav>
     <nav class="ms-auto">
-        <a class="p-2 btn btn-outline-primary" href="#">Вход</a>
-        <a class="p-2 btn btn-outline-primary" href="#">Регистрация</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:login' %}">Вход</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:register' %}">Регистрация</a>
     </nav>
 </div>
