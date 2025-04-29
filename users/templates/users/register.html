@@ -12,7 +12,10 @@
                     <form method="post">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Зарегистрироваться</button>
+                        <p class="text-center">
+                            Уже есть аккаунт? <a href="{% url 'users:login' %}">Войти</a>
+                        </p>
                     </form>
                 </div>
             </div>
