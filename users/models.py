@@ -3,6 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
+    username = None
     email = models.EmailField(unique=True, verbose_name="Email")
 
     avatar = models.ImageField(
@@ -28,7 +29,7 @@ class User(AbstractUser):
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = []
 
     class Meta:
         verbose_name = "Пользователь"
