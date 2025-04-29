@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'catalog',
     'blogs',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -109,7 +110,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = '/accounts/login/'  # URL для входа
+AUTH_USER_MODEL = 'users.User'
+LOGIN_URL = 'users:login'
+# LOGIN_URL = '/accounts/login/'  # URL для входа
 LOGIN_REDIRECT_URL = '/'  # Куда перенаправлять после успешного входа
 LOGOUT_REDIRECT_URL = '/'  # Куда перенаправлять после выхода
 
