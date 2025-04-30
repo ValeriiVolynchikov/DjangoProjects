@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+# import certifi
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -41,8 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'users.apps.UsersConfig',
     'catalog',
     'blogs',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -109,9 +112,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = '/accounts/login/'  # URL для входа
-LOGIN_REDIRECT_URL = '/'  # Куда перенаправлять после успешного входа
-LOGOUT_REDIRECT_URL = '/'  # Куда перенаправлять после выхода
+AUTH_USER_MODEL = 'users.User'
+LOGIN_URL = 'users:login'
+# LOGIN_URL = '/accounts/login/'  # URL для входа
+LOGIN_REDIRECT_URL = 'catalog:home'  # Куда перенаправлять после успешного входа
+LOGOUT_REDIRECT_URL = 'catalog:home'  # Куда перенаправлять после выхода
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -141,14 +146,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' (письма не отправляются, а выводятся в консоль)
+# os.environ['SSL_CERT_FILE'] = certifi.where()
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # (письма отправляются через SMTP-сервер)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # (письма не отправляются, а выводятся в консоль)
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'valeriy.volynchikov@yandex.ru'
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# Используйте
+DEFAULT_FROM_EMAIL = 'Skystore <noreply@yourdomain.com>'
+EMAIL_SUBJECT_PREFIX = '[Skystore]'
+SITE_NAME = 'Skystore'  # Для подписи в письмах
 
 # File upload settings
 MAX_UPLOAD_SIZE = 5 * 1024 * 1024  # 5MB
