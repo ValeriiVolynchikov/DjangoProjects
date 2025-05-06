@@ -18,6 +18,6 @@ urlpatterns = [
     path('delete-product/<int:pk>/', ProductDeleteView.as_view(), name='delete_product'),
     path('category/<int:category_id>/', CategoryView.as_view(), name='category_view'),
     path('unpublish-product/<int:pk>/', views.UnpublishProductView.as_view(), name='unpublish_product'),
-    path('publish-product/<int:pk>/', views.PublishProductView.as_view(), name='publish_product'),
     path('toggle-publish/<int:pk>/', views.TogglePublishProductView.as_view(), name='toggle_publish'),
+    path('unpublish-product/<int:pk>/confirm/', views.UnpublishProductConfirmView.as_view(), name='unpublish_product_confirm'),
 ]

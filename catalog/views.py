@@ -43,11 +43,11 @@ class HomeView(ListView):
 
 class ProductDetailView(DetailView):
     model = Product
-    template_name = 'product_info.html'
+    template_name = 'catalog/product_info.html'
     context_object_name = 'product'
 
 class ContactsView(TemplateView):
-    template_name = 'contacts.html'
+    template_name = 'catalog/contacts.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -64,7 +64,7 @@ class ContactsView(TemplateView):
 class ProductCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Product
     form_class = ProductForm
-    template_name = 'add_product.html'
+    template_name = 'catalog/add_product.html'
     success_url = reverse_lazy('catalog:home')
     success_message = "Продукт успешно добавлен!"
 
@@ -89,7 +89,7 @@ class ProductCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 class ProductUpdateView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
-    template_name = 'edit_product.html'
+    template_name = 'catalog/edit_product.html'
     success_url = reverse_lazy('catalog:home')
     success_message = "Продукт успешно обновлен!"
 
@@ -112,7 +112,7 @@ class ProductUpdateView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestM
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
-    template_name = 'delete_product.html'
+    template_name = 'catalog/delete_product.html'
     success_url = reverse_lazy('catalog:home')
 
     # Пример проверки в представлении
@@ -165,28 +165,56 @@ class CategoryView(ListView):
         try:
             return super().dispatch(request, *args, **kwargs)
         except Category.DoesNotExist:
-            return render(request, 'category_not_found.html', {'category_id': kwargs['category_id']})
+            return render(request, 'catalog/catalog/category_not_found.html', {'category_id': kwargs['category_id']})
 
 
-class UnpublishProductView(PermissionRequiredMixin, View):
+# class UnpublishProductView(PermissionRequiredMixin, View):
+#     permission_required = 'catalog.can_unpublish_product'
+#
+#     def post(self, request, pk):
+#         product = get_object_or_404(Product, pk=pk)
+#         product.is_published = False
+#         product.save()
+#         messages.success(request, f"Товар '{product.name}' снят с публикации")
+#         return redirect('catalog:product_info', pk=product.pk)
+#
+#
+# class PublishProductView(PermissionRequiredMixin, View):
+#     permission_required = 'catalog.can_unpublish_product'
+#
+#     def post(self, request, pk):
+#         product = get_object_or_404(Product, pk=pk)
+#         product.is_published = True
+#         product.save()
+#         messages.success(request, f"Товар '{product.name}' опубликован")
+#         return redirect('catalog:product_info', pk=product.pk)
+
+class UnpublishProductView(PermissionRequiredMixin, TemplateView):
+    permission_required = 'catalog.can_unpublish_product'
+    template_name = 'catalog/unpublish_product.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, pk=self.kwargs['pk'])
+        if not product.is_published:
+            messages.error(self.request, "Этот товар уже не опубликован")
+            raise PermissionDenied
+        context['product'] = product
+        return context
+
+
+class UnpublishProductConfirmView(PermissionRequiredMixin, View):
     permission_required = 'catalog.can_unpublish_product'
 
     def post(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
+        if not product.is_published:
+            messages.error(request, "Этот товар уже не опубликован")
+            return redirect('catalog:product_info', pk=product.pk)
+
         product.is_published = False
         product.save()
-        messages.success(request, f"Товар '{product.name}' снят с публикации")
-        return redirect('catalog:product_info', pk=product.pk)
-
-
-class PublishProductView(PermissionRequiredMixin, View):
-    permission_required = 'catalog.can_unpublish_product'
-
-    def post(self, request, pk):
-        product = get_object_or_404(Product, pk=pk)
-        product.is_published = True
-        product.save()
-        messages.success(request, f"Товар '{product.name}' опубликован")
+        messages.success(request, f"Товар '{product.name}' успешно снят с публикации")
         return redirect('catalog:product_info', pk=product.pk)
 
 
