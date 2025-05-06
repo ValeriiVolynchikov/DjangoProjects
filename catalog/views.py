@@ -1,10 +1,12 @@
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
-from django.shortcuts import redirect, render, HttpResponse
+from django.shortcuts import redirect, render, HttpResponse, get_object_or_404
 from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 
 from catalog.models import Product, Contact, Category
 from catalog.forms import ProductForm
@@ -16,6 +18,7 @@ class HomeView(ListView):
     paginate_by = 6
 
     def get_queryset(self):
+        queryset = Product.objects.filter(publication_status='published')
         search_query = self.request.GET.get('q', '')
         queryset = Product.objects.all()  # Получаем все продукты
 
@@ -32,7 +35,11 @@ class HomeView(ListView):
         context = super().get_context_data(**kwargs)
         context['search_query'] = self.request.GET.get('q', '')
         context['categories'] = Category.objects.all()
+        context['can_delete_product'] = 'catalog.can_delete_product'  # Добавляем переменную в контекст
         return context
+
+
+
 
 class ProductDetailView(DetailView):
     model = Product
@@ -62,6 +69,7 @@ class ProductCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_message = "Продукт успешно добавлен!"
 
     def form_valid(self, form):
+        form.instance.owner = self.request.user
         new_category_name = form.cleaned_data.get('new_category_name', '').strip()
         category = form.cleaned_data.get('category')
 
@@ -78,22 +86,64 @@ class ProductCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             form.add_error(None, "Выберите существующую категорию или укажите новую")
             return self.form_invalid(form)
 
-class ProductUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'edit_product.html'
     success_url = reverse_lazy('catalog:home')
     success_message = "Продукт успешно обновлен!"
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    def test_func(self):
+        product = self.get_object()
+        user = self.request.user
+        return user == product.owner or user.has_perm('catalog.can_change_product_status')
+
+    def dispatch(self, request, *args, **kwargs):
+        product = self.get_object()
+        # Разрешаем удаление:
+        # - владельцу продукта
+        # - пользователям с правом can_delete_product
+        # - staff пользователям
+        if not (product.owner == request.user or
+                request.user.has_perm('catalog.can_delete_product') or
+                request.user.is_staff):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     template_name = 'delete_product.html'
     success_url = reverse_lazy('catalog:home')
+
+    # Пример проверки в представлении
+    def edit_product(request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if not (request.user == product.owner or request.user.is_staff):
+            raise PermissionDenied
+        # остальной код представления
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_staff:
             raise PermissionDenied
         return super().post(request, *args, **kwargs)
+
+    def test_func(self):
+        product = self.get_object()
+        user = self.request.user
+        return user == product.owner or user.has_perm('catalog.delete_product')
+
+
+class ProductPublishView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'catalog.can_change_product_status'
+    model = Product
+    fields = ['publication_status']
+    template_name = 'catalog/publish_product.html'
+    success_url = reverse_lazy('catalog:home')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, f"Статус продукта изменен на {self.object.get_publication_status_display()}")
+        return response
 
 class CategoryView(ListView):
     model = Product
@@ -116,3 +166,12 @@ class CategoryView(ListView):
             return super().dispatch(request, *args, **kwargs)
         except Category.DoesNotExist:
             return render(request, 'category_not_found.html', {'category_id': kwargs['category_id']})
+
+class UnpublishProductView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if not request.user.has_perm('catalog.can_unpublish_product'):
+            raise PermissionDenied
+        product.is_published = False
+        product.save()
+        return redirect('catalog:product_list')

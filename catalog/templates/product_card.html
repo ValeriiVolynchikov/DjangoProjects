@@ -16,16 +16,29 @@
                 <div class="d-grid gap-2 rounded">
                     <a href="{% url 'catalog:product_info' product.pk %}"
                        class="btn btn-sm btn-outline-primary rounded">Подробнее</a>
+
+                    {% if user == product.owner or user.is_staff %}
                     <div class="btn-group gap-1 rounded">
+                        {% if perms.catalog.change_product %}
                         <a href="{% url 'catalog:edit_product' product.pk %}"
                            class="btn btn-sm btn-outline-warning rounded">Изменить</a>
+                        {% endif %}
+
+                        {% if perms.catalog.delete_product %}
                         <button type="button"
                                 class="btn btn-sm btn-outline-danger rounded"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal{{ product.pk }}">
                             Удалить
                         </button>
+                        {% endif %}
                     </div>
+                    {% endif %}
+
+                    {% if perms.catalog.can_unpublish_product and product.is_published %}
+                    <a href="{% url 'catalog:publish_product' product.pk %}"
+                       class="btn btn-sm btn-outline-info rounded">Снять с публикации</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
