@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h2>Управление публикацией товара</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Товар: <strong>{{ product.name }}</strong></p>
+                    <p>Текущий статус: 
+                        <span class="badge bg-{% if product.is_published %}success{% else %}danger{% endif %}">
+                            {% if product.is_published %}Опубликован{% else %}Не опубликован{% endif %}
+                        </span>
+                    </p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="is_published" value="{% if product.is_published %}false{% else %}true{% endif %}">
+                        
+                        <div class="alert alert-warning">
+                            {% if product.is_published %}
+                                Вы уверены, что хотите снять товар с публикации?
+                            {% else %}
+                                Вы уверены, что хотите опубликовать этот товар?
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-{% if product.is_published %}info{% else %}success{% endif %}">
+                                {% if product.is_published %}Снять с публикации{% else %}Опубликовать{% endif %}
+                            </button>
+                            <a href="{% url 'catalog:product_info' product.pk %}" class="btn btn-secondary">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

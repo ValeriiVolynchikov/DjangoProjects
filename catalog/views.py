@@ -137,7 +137,7 @@ class ProductPublishView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
     permission_required = 'catalog.can_change_product_status'
     model = Product
     fields = ['publication_status']
-    template_name = 'catalog/publish_product.html'
+    template_name = 'catalog/unpublish_product.html'
     success_url = reverse_lazy('catalog:home')
 
     def form_valid(self, form):
@@ -167,11 +167,41 @@ class CategoryView(ListView):
         except Category.DoesNotExist:
             return render(request, 'category_not_found.html', {'category_id': kwargs['category_id']})
 
-class UnpublishProductView(LoginRequiredMixin, View):
+
+class UnpublishProductView(PermissionRequiredMixin, View):
+    permission_required = 'catalog.can_unpublish_product'
+
     def post(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
-        if not request.user.has_perm('catalog.can_unpublish_product'):
-            raise PermissionDenied
         product.is_published = False
         product.save()
-        return redirect('catalog:product_list')
+        messages.success(request, f"Товар '{product.name}' снят с публикации")
+        return redirect('catalog:product_info', pk=product.pk)
+
+
+class PublishProductView(PermissionRequiredMixin, View):
+    permission_required = 'catalog.can_unpublish_product'
+
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        product.is_published = True
+        product.save()
+        messages.success(request, f"Товар '{product.name}' опубликован")
+        return redirect('catalog:product_info', pk=product.pk)
+
+
+class TogglePublishProductView(PermissionRequiredMixin, View):
+    permission_required = 'catalog.can_unpublish_product'
+    template_name = 'catalog/unpublish_product.html'
+
+    def get(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        return render(request, self.template_name, {'product': product})
+
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        product.is_published = not product.is_published
+        product.save()
+        action = "снят с публикации" if not product.is_published else "опубликован"
+        messages.success(request, f"Товар '{product.name}' {action}")
+        return redirect('catalog:product_info', pk=product.pk)

@@ -8,8 +8,8 @@ from .forms import ProductForm
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
-    list_display = ("id", "name", "price", "category", "is_active")
-    list_filter = ("category", "is_active")
+    list_display = ("id", "name", "price", "category", "is_published")
+    list_filter = ("category", "is_published")
     search_fields = ("name", "description")
 
 
