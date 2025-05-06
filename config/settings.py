@@ -147,6 +147,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # os.environ['SSL_CERT_FILE'] = certifi.where()
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DjangoProjects.settings')
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # (письма отправляются через SMTP-сервер)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # (письма не отправляются, а выводятся в консоль)
