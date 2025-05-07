@@ -63,7 +63,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        #'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # 'DIRS': [BASE_DIR / 'templates', BASE_DIR / 'catalog/templates'],  # Добавьте пути к директориям с шаблонами
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,7 +138,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [BASE_DIR / 'static']
+# STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -147,6 +150,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # os.environ['SSL_CERT_FILE'] = certifi.where()
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DjangoProjects.settings')
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # (письма отправляются через SMTP-сервер)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # (письма не отправляются, а выводятся в консоль)

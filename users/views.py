@@ -24,6 +24,7 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         user = form.save(commit=False)
+        user.is_verified = False  # Явно устанавливаем значение
         user.is_active = True  # Активируем сразу для тестирования
         user.save()
         login(self.request, user)
