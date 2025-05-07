@@ -40,21 +40,23 @@ DjangoProjects/
 │   ├── settings.py        # Основные настройки проекта
 │   ├── urls.py            # Основные маршруты проекта
 │   ├── wsgi.py            # Точка входа для WSGI
-│
+├── templates/         # HTML-шаблоны
+│   ├── includes/
+│   │   ├── footer.html    
+│   │   ├── header.html  
+│   ├── home.html      # Главная страница
+│   ├── base.html      # Базовый шаблон
 ├── catalog/               # Приложение интернет-магазина
 │   ├── templates/         # HTML-шаблоны
-│   │   ├── home.html      # Главная страница
 │   │   ├── contacts.html  # Страница контактов
-│   │   ├── base.html      # Базовый шаблон
-│   │   ├── add_product.html  
-│   │   ├── footer.html    
-│   │   ├── header.html    
+│   │   ├── add_product.html    
 │   │   ├── product_card.html  
 │   │   ├──  product_info.html
 │   │   ├──  category.html
 │   │   ├──  category_not_found.html
 │   │   ├──  delete_product.html
 │   │   ├──  edit_product.html
+│   │   ├──  unpublich_product.html
 │   ├── templatags/        
 │   │   ├── mu_tags.py     # Файл с пользовательскими тегами
 │   ├── migrations.py      # Директория приложения файлов миграции СБД
@@ -84,6 +86,34 @@ DjangoProjects/
 │   ├── views.py           # Контроллеры (обработка страниц и формы)
 │   ├── urls.py            # Маршруты приложения
 │   ├── models.py 
+├── users/               # Приложение USERS
+│   ├── templates/         # HTML-шаблоны
+│   │   ├── users/
+│   │   	├── login.html      
+│   │   	├── profile.html  
+│   │   	├── register.html 
+│   │   	├── password_reset.html  
+│   │   	├── password_reset_complete.html
+│   │   	├── password_reset_confirm.html
+│   │   	├── password_reset_done.html
+│   │   	├── password_reset_email.html
+│   │   	├── password_reset_subject.txt
+│   │   	├── password_reset_test.html
+│   │   	├──	verify_required.html    # шаблон в разработке другой ветки проекта
+│   │   	├──	registration_sent.html  # шаблон в разработке другой ветки проекта
+│   │   	├──	verify_email.html		# шаблон в разработке другой ветки проекта
+│   ├── management/        # Пакет приложения кастомной команды
+│   ├───__init__.py
+│       └───commands/
+│           ├───__init__.py
+│           └───csu.py
+│   ├── migrations.py      # Директория приложения файлов миграции СБД
+│   ├── forms.py
+│   ├── views.py           # Контроллеры (обработка страниц и формы)
+│   ├── urls.py            # Маршруты приложения
+│   ├── models.py 
+│   ├── admin.py
+│   ├── middleware.py	   # Для проверки верификации (опционально)	
 ├── static/                # Статические файлы (CSS, JS, изображения)
 │   ├── css/bootstrap.min.css
 |   ├── js/bootstrap.min.css
