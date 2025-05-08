@@ -21,7 +21,7 @@
                         <a href="{% url 'catalog:unpublish_product' product.pk %}"
                            class="btn btn-sm btn-outline-info rounded">Снять с публикации</a>
                     {% elif perms.catalog.can_unpublish_product and not product.is_published %}
-                        <a href="{% url 'catalog:publish_product' product.pk %}"
+                        <a href="{% url 'catalog:unpublish_product' product.pk %}"
                            class="btn btn-sm btn-outline-success rounded">Опубликовать</a>
                     {% endif %}
 
