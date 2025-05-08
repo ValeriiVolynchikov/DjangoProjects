@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render, HttpResponse, get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 
+from blogs.models import BlogPost
 from catalog.models import Product, Contact, Category
 from catalog.forms import ProductForm
 
@@ -33,12 +34,16 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['latest_blogs'] = BlogPost.objects.filter(publication_sign=True).order_by('-created_at')[
+                                  :3]  # Получаем последние 3 опубликованные записи
+        return context
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['search_query'] = self.request.GET.get('q', '')
         context['categories'] = Category.objects.all()
         context['can_delete_product'] = 'catalog.can_delete_product'  # Добавляем переменную в контекст
         return context
-
-
 
 
 class ProductDetailView(DetailView):
