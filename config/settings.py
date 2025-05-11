@@ -30,6 +30,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv('DEBUG') == "True" else False
 
+CACHE_ENABLED = os.getenv('CACHE_ENABLED', 'False') == 'True'
+
 ALLOWED_HOSTS = ["*"]
 
 
@@ -167,3 +169,13 @@ SITE_NAME = 'Skystore'  # Для подписи в письмах
 # File upload settings
 MAX_UPLOAD_SIZE = 5 * 1024 * 1024  # 5MB
 ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png']
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
