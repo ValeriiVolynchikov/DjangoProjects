@@ -43,7 +43,12 @@ DjangoProjects/
 ├── templates/         # HTML-шаблоны
 │   ├── includes/
 │   │   ├── footer.html    
-│   │   ├── header.html  
+│   │   ├── header.html 
+│   │   ├── main_menu.html 
+│   ├── admin/
+│   │   ├── catalog/ 
+│   │   │   ├── product/
+│   │   │   │   ├── change_list.html
 │   ├── home.html      # Главная страница
 │   ├── base.html      # Базовый шаблон
 ├── catalog/               # Приложение интернет-магазина
@@ -61,6 +66,7 @@ DjangoProjects/
 │   │   ├── mu_tags.py     # Файл с пользовательскими тегами
 │   ├── migrations.py      # Директория приложения файлов миграции СБД
 │   ├── forms.py
+│   ├── services.py        # Сервисная функция для продуктов в категории
 │   ├── views.py           # Контроллеры (обработка страниц и формы)
 │   ├── urls.py            # Маршруты приложения
 │   ├── photo/             # Папка хранения изображений продуктов
